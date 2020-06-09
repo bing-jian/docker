@@ -1,0 +1,9 @@
+FROM ubuntu18.04_3dvg
+
+# Python-PCL dependency - must be installed first
+# Also installed as dependency: boost, qt, vtk
+RUN apt-get update && apt-get install -y libpcl-dev=1.8.1+dfsg1-2ubuntu2.18.04.1 libpcl-visualization1.8
+
+# Packages
+# TODO: Fix the issue of importing pcl.
+RUN pip install python-pcl pye57

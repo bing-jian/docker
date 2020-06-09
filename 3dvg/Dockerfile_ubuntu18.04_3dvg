@@ -1,0 +1,19 @@
+FROM ubuntu18.04_basic
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Essentials
+RUN apt-get update --fix-missing 
+RUN apt-get install -y make m4 g++ gcc build-essential
+RUN apt-get install -y cmake cmake-curses-gui
+RUN apt-get install -y libatlas-base-dev
+RUN apt-get install -y libjpeg-dev libopencv-dev
+
+# Packages
+RUN conda update -n base -c defaults conda
+RUN conda install -c conda-forge pdal \
+                                 python-pdal \
+                                 gdal
+
+RUN pip install trimesh
+RUN pip install opencv-python
+RUN pip install open3d
