@@ -1,0 +1,16 @@
+FROM nvidia/cuda:10.2-devel-ubuntu18.04
+ENV DEBIAN_FRONTEND=noninteractive
+ENV GPU_MODE=1
+
+RUN apt-get update
+
+# essentials
+RUN apt-get install -y \
+    git \
+    curl \
+    cmake \
+    cmake-curses-gui \
+    vim \
+    build-essential
+
+
