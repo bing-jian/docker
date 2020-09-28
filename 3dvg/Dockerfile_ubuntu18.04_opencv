@@ -1,0 +1,16 @@
+FROM ubuntu18.04_3dvg
+
+# OpenCV: Installing latest master
+# http://amritamaz.net/blog/opencv-config
+# TODO: install python binding
+RUN cd ${THIRDPARTY_REPOS} && \
+    git clone --recursive https://github.com/opencv/opencv.git && \
+    git clone --recursive https://github.com/opencv/opencv_contrib.git && \
+    cd opencv && mkdir build && cd build && \
+    cmake .. -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
+      -DBUILD_LIST=core,highgui,imgproc,imgcodec,flann,features2d,xfeatures2d \
+      -DBUILD_EXAMPLES=OFF -DBUILD_opencv_apps=OFF -DBUILD_DOC=OFF \
+      -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_CSTRIPES=ON \
+      -DBUILD_WITH_TBB=ON -DBUILD_OPENMP=ON -DWITH_IPP=ON \
+      -DCMAKE_BUILD_TYPE=Release && \
+      make -j$(nproc) && make install
