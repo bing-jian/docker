@@ -12,5 +12,8 @@ RUN cd ${THIRDPARTY_REPOS} && \
       -DBUILD_EXAMPLES=OFF -DBUILD_opencv_apps=OFF -DBUILD_DOC=OFF \
       -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_CSTRIPES=ON \
       -DBUILD_WITH_TBB=ON -DBUILD_OPENMP=ON -DWITH_IPP=ON \
+      -DBUILD_TIFF=ON \
+      -DENABLE_PRECOMPILED_HEADERS=OFF \
       -DCMAKE_BUILD_TYPE=Release && \
-      make -j$(nproc) && make install
+      make && make install
+#     make -j$(nproc) && make install
