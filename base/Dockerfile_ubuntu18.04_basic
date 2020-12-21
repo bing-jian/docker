@@ -9,11 +9,24 @@ RUN conda install -y    \
         ipython         \
         matplotlib      \
         numpy           \
-        scipy
+        scipy           \
+        pybind11
+
 RUN conda install -y    \
         h5py            \
         pandas          \
         scikit-learn    \
         scikit-image
 
+RUN /opt/conda/bin/python -m pip install --upgrade pip
+
 #TODO RUN conda install -c plotly plotly=4.1.0
+
+RUN conda install -c conda-forge pdal \
+                                 python-pdal \
+                                 gdal
+
+RUN pip install networkx
+RUN pip install trimesh
+RUN pip install hickle
+RUN pip install termcolor

@@ -1,0 +1,12 @@
+FROM ubuntu18.04_3dvg
+
+# Install latest version of vxl
+RUN cd ${THIRDPARTY_REPOS} && \
+    git clone https://github.com/vxl/vxl && \
+    cd vxl && mkdir -p build_cmake && cd build_cmake && \
+    cmake .. \
+      -DVXL_BUILD_EXAMPLES=OFF \
+      -DENABLE_PRECOMPILED_HEADERS=OFF \
+      -DCMAKE_BUILD_TYPE=Release && \
+    make -j$(nproc) && make install && \
+    cd .. && rm -rf build_cmake
