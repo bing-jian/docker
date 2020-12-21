@@ -13,3 +13,8 @@ build_ubuntu18.04_pcl:
 build_ubuntu18.04_open3d:
 	docker build -f Dockerfile_ubuntu18.04_open3d -t ubuntu18.04_open3d .
 .PHONY: build_ubuntu18.04_open3d
+
+build_ubuntu18.04_vxl:
+	docker build -f Dockerfile_ubuntu18.04_vxl -t ubuntu18.04_vxl .
+.PHONY: build_ubuntu18.04_vxl
+

@@ -56,11 +56,26 @@ RUN cd ${TMP_DOWNLOADS_DIR} && \
 # Install latest version of Eigen
 RUN cd ${THIRDPARTY_REPOS} && \
     git clone https://gitlab.com/libeigen/eigen.git && \
-    cd eigen && mkdir build && cd build && \
+    cd eigen && mkdir -p build && cd build && \
     cmake .. && make -j$(nproc) && make install && \
     cd .. && rm -rf build
 
+# Install latest version of glog
+RUN cd ${THIRDPARTY_REPOS} && \
+    git clone https://github.com/google/glog && \
+    cd glog && mkdir -p build_cmake && cd build_cmake && \
+    cmake .. && make -j$(nproc) && make install && \
+    cd .. && rm -rf build_cmake
 
+# Install latest version of googletest
+RUN cd ${THIRDPARTY_REPOS} && \
+    git clone https://github.com/google/googletest && \
+    cd googletest && mkdir -p build_cmake && cd build_cmake && \
+    cmake .. && make -j$(nproc) && make install && \
+    cd .. && rm -rf build_cmake
+
+
+RUN pip install mkl==2021.1.1
 RUN pip install opencv-python
 RUN pip install opencv-contrib-python
 RUN pip install open3d
