@@ -1,0 +1,23 @@
+FROM --platform=linux/x86_64 ubuntu:18.04
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+# Essentials
+RUN apt-get update --fix-missing
+RUN apt-get install -y apt-utils
+RUN apt-get install -y sudo
+RUN apt-get install -y bzip2
+RUN apt-get install -y curl wget rsync
+RUN apt-get install -y vim
+RUN apt-get install -y g++ gcc
+RUN apt-get install -y make m4
+RUN apt-get install -y cmake cmake-curses-gui
+RUN apt-get install -y build-essential
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Tini
+ENV TINI_VERSION v0.16.1
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod +x /usr/bin/tini
+
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
+CMD [ "/bin/bash" ]

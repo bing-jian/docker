@@ -1,4 +1,4 @@
-FROM ubuntu18.04_3dvg
+FROM --platform=linux/x86_64 ubuntu18.04_dev
 
 # OpenCV: Installing latest master
 # http://amritamaz.net/blog/opencv-config

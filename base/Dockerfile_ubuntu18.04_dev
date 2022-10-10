@@ -1,0 +1,66 @@
+FROM --platform=linux/x86_64 ubuntu18.04_essential
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Essentials
+RUN apt-get update --fix-missing
+RUN apt-get install -y make m4 g++ gcc build-essential
+RUN apt-get install -y cmake cmake-curses-gui
+RUN apt-get install -y ninja-build
+
+RUN apt-get install -y libc++-7-dev
+RUN apt-get install -y libc++abi-7-dev
+
+RUN apt-get install -y python-dev python-tk
+RUN apt-get install -y python3-dev python3-tk
+
+RUN apt-get install -y libatlas-base-dev
+RUN apt-get install -y libtbb-dev
+RUN apt-get install -y libeigen3-dev
+RUN apt-get install -y libjpeg-dev libpng-dev
+RUN apt-get install -y libfreeimage-dev
+RUN apt-get install -y libopencv-dev
+
+RUN apt-get install -y libjsoncpp-dev
+RUN apt-get install -y libgflags-dev
+
+RUN apt-get install -y ca-certificates
+
+
+RUN mkdir -p /tmp/downloads && \
+    mkdir -p /opt && \
+    mkdir -p /3rdparty_repos 
+
+
+ENV TMP_DOWNLOADS_DIR=/tmp/downloads
+ENV THIRDPARTY_REPOS=/3rdparty_repos
+
+# Some packages require modern version of CMake
+RUN apt-get install -y sudo wget rsync
+RUN cd ${TMP_DOWNLOADS_DIR} && \
+    wget --quiet https://github.com/Kitware/CMake/releases/download/v3.18.2/cmake-3.18.2-Linux-x86_64.tar.gz -O cmake.tar.gz && \
+    tar zxvf cmake.tar.gz && rsync -av cmake-3.18.2-Linux-x86_64/ /usr/ && \
+    rm -rf cmake-3.18.2-Linux-x86_64 && rm cmake.tar.gz
+
+# Install Eigen 3.4.0
+RUN cd ${THIRDPARTY_REPOS} && \
+    wget --quiet https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz -O eigen.tar.gz && \
+    tar zxvf eigen.tar.gz && \
+    cd eigen && mkdir -p build && cd build && \
+    cmake .. && make -j$(nproc) && make install && \
+    cd .. && rm -rf build
+
+# Install latest version of gflags
+RUN cd ${THIRDPARTY_REPOS} && \
+    git clone https://github.com/gflags/gflags.git && \
+    cd gflags && mkdir -p build_cmake && cd build_cmake && \
+    cmake -DGFLAGS_NAMESPACE=google -DCMAKE_CXX_FLAGS=-fPIC -DBUILD_SHARED_LIBS=ON .. && \
+    make -j$(nproc) && make install && ldconfig && \
+    cd .. && rm -rf build_cmake
+
+
+# Install latest version of googletest
+RUN cd ${THIRDPARTY_REPOS} && \
+    git clone https://github.com/google/googletest && \
+    cd googletest && mkdir -p build_cmake && cd build_cmake && \
+    cmake .. && make -j$(nproc) && make install && \
+    cd .. && rm -rf build_cmake
