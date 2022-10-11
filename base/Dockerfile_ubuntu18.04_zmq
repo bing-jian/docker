@@ -1,0 +1,14 @@
+FROM --platform=linux/x86_64 ubuntu18.04_dev
+
+RUN apt-get install -y libzmq5 libzmq3-dev
+
+RUN cd ${THIRDPARTY_REPOS} ; \
+    curl -L https://github.com/zeromq/cppzmq/archive/v4.6.0.tar.gz | tar -zxf - ;  \
+    cd cppzmq-4.6.0; mkdir -p build_cmake; cd build_cmake; \
+    cmake -D CPPZMQ_BUILD_TESTS:BOOL=OFF ..; make; make install; \
+    cd ..; rm -rf build_cmake
+
+RUN cd ${THIRDPARTY_REPOS} ; \
+    git clone https://github.com/jasujm/apparatus-examples ; \
+    cd apparatus-examples/docker-cpp; mkdir -p build ; \
+    cd build; cmake ..; make 
