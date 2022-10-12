@@ -33,3 +33,10 @@ RUN cd ${THIRDPARTY_REPOS} && \
       -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) && make install
 
+RUN pip install mkl==2021.1.1
+RUN pip install opencv-python
+RUN pip install opencv-contrib-python
+
+# opencv requires libgl1
+RUN apt-get update --fix-missing
+RUN apt-get install -y libgl1-mesa-dev
