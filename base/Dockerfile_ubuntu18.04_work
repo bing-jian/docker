@@ -1,20 +1,29 @@
 FROM --platform=linux/x86_64 ubuntu18.04_dev
 
-# OpenCV: Installing OpenCV 4.6.0
-# http://amritamaz.net/blog/opencv-config
-# TODO: install python binding
+# Install ZeroMQ and Cpp binding
+RUN apt-get install -y libzmq5 libzmq3-dev
 
+RUN cd ${THIRDPARTY_REPOS} ; \
+    curl -L https://github.com/zeromq/cppzmq/archive/v4.6.0.tar.gz | tar -zxf - ;  \
+    cd cppzmq-4.6.0; mkdir -p build_cmake; cd build_cmake; \
+    cmake -D CPPZMQ_BUILD_TESTS:BOOL=OFF ..; make; make install; \
+    cd ..; rm -rf build_cmake
+
+# Download OpenCV source code
 RUN cd ${THIRDPARTY_REPOS} && \
   wget https://github.com/opencv/opencv/archive/refs/tags/4.6.0.tar.gz && \
   mv 4.6.0.tar.gz opencv.tar.gz && \
   tar zxvf opencv.tar.gz && \
   wget https://github.com/opencv/opencv_contrib/archive/refs/tags/4.6.0.tar.gz && \
   mv 4.6.0.tar.gz opencv_contrib.tar.gz && \
-  tar zxvf opencv_contrib.tar.gz && \
+  tar zxvf opencv_contrib.tar.gz
+
+# Let building opencv be a separate step since it may fail
+RUN cd ${THIRDPARTY_REPOS} && \
   cd opencv-4.6.0 && mkdir build && cd build && \
   cmake .. -DCMAKE_CXX_STANDARD=14 \
       -DOPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-4.6.0/modules \
-      -DBUILD_LIST=core,highgui,imgproc,imgcodecs,flann,features2d,xfeatures2d,video,videoio,ml \
+      -DBUILD_LIST=core,bgsegm,highgui,imgproc,imgcodec,flann,features2d,xfeatures2d,video,videoio \
       -DBUILD_EXAMPLES=OFF -DBUILD_opencv_apps=OFF -DBUILD_DOC=OFF \
       -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_CSTRIPES=ON \
       -DBUILD_WITH_TBB=ON -DBUILD_OPENMP=ON -DWITH_IPP=ON \
@@ -24,3 +33,10 @@ RUN cd ${THIRDPARTY_REPOS} && \
       -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) && make install
 
+RUN pip install mkl==2021.1.1
+RUN pip install opencv-python
+RUN pip install opencv-contrib-python
+
+# opencv requires libgl1
+RUN apt-get update --fix-missing
+RUN apt-get install -y libgl1-mesa-dev

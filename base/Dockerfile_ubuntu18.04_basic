@@ -1,4 +1,4 @@
-FROM ubuntu18.04_miniconda
+FROM --platform=linux/x86_64 ubuntu18.04_miniconda
 
 # Packages
 RUN pip install -U pip setuptools
@@ -19,14 +19,13 @@ RUN conda install -y    \
         scikit-image
 
 RUN /opt/conda/bin/python -m pip install --upgrade pip
-
-#TODO RUN conda install -c plotly plotly=4.1.0
-
-RUN conda install -c conda-forge pdal \
-                                 python-pdal \
-                                 gdal
-
 RUN pip install networkx
-RUN pip install trimesh
-RUN pip install hickle
 RUN pip install termcolor
+
+RUN pip install mkl==2021.1.1
+RUN pip install opencv-python
+RUN pip install opencv-contrib-python
+
+# opencv requires libgl1
+RUN apt-get update --fix-missing
+RUN apt-get install -y libgl1-mesa-dev
